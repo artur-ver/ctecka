@@ -1,0 +1,74 @@
+##############################################################
+
+#!      ONLY if old version and xterm cant install 
+
+
+
+sudo apt update
+sudo apt upgrade -y
+sudo apt full-upgrade -y
+sudo apt autoremove -y
+
+sleep 3
+
+sudo sed -i 's/buster/bullseye/g' /etc/apt/sources.list
+sudo sed -i 's/buster/bullseye/g' /etc/apt/sources.list.d/*.list
+
+sleep 3
+
+sudo apt update
+sudo apt upgrade -y
+sudo apt full-upgrade -y
+
+##############################################################
+
+
+
+sudo chmod -R 777 /app
+sudo chown -R $USER:$USER /app
+
+
+
+sudo apt-get install xdotool
+
+
+sudo apt install -y xterm
+
+
+sudo rm /home/pi/Desktop/LogAPP
+sudo rm /home/pi/.config/autostart/LogAPP.desktop
+sudo rm /app/runApp.sh
+
+
+git clone https://github.com/artur-ver/rus.git /app/temp
+rsync -a --exclude='.git' /app/temp/ /app/
+rm -rf /app/temp
+
+
+sleep 3
+
+mkdir -p ~/.config/systemd/user
+
+echo -e '[Unit]\nDescription=Autostart app_draha1.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/app_draha1.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-app1.service
+echo -e '[Unit]\nDescription=Autostart app_draha2.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/app_draha2.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-app2.service
+echo -e '[Unit]\nDescription=Autostart restart.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/restart.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-restart.service
+echo -e '[Unit]\nDescription=Autostart comp_clean.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/comp_clean.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-clean.service
+echo -e '[Unit]\nDescription=Autostart restart_app.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/restart_app.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-restart_app.service
+
+#echo -e '[Unit]\nDescription=Autostart internet.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/internet.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-internet.service
+
+systemctl --user daemon-reexec
+systemctl --user enable autostart-app1.service autostart-app2.service autostart-restart.service autostart-clean.service autostart-restart_app.service
+systemctl --user restart autostart-app1.service autostart-app2.service autostart-restart.service autostart-clean.service autostart-restart_app.service
+
+
+
+loginctl enable-linger $USER
+
+
+exit
+
+
+
+
+
