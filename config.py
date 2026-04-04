@@ -3,14 +3,14 @@ import os
 # Centralized configuration for all scripts
 
 CISLO_DRAHY = 'A1'
-SERIAL_DEVICE = "/dev/ttyUSB0"
+SERIAL_DEVICE = "/dev/hidraw1"
 
 
 CISLO_DRAHY2 = 'A2'
-SERIAL_DEVICE2 = "/dev/ttyUSB1"
+SERIAL_DEVICE2 = "/dev/hidraw2"
 
 
-FTP_HOST = '0.0.0.0'
+FTP_HOST = '100.124.220.73'
 FTP_USER = 'user'
 FTP_PASS = '1234'
 
