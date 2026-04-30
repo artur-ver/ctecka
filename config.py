@@ -20,8 +20,8 @@ LOG_DIR_ROOT = os.path.join(SCRIPT_DIR, 'logs')
 # USB serial devices for QR scanners
 # On Raspberry Pi, USB serial devices appear as /dev/ttyUSB0, /dev/ttyUSB1
 # or /dev/ttyACM0, /dev/ttyACM1 depending on the scanner model
-USB_DEVICE_1 = "/dev/ttyUSB0"
-USB_DEVICE_2 = "/dev/ttyUSB1"
+USB_DEVICE_1 = "/dev/ttyACM0"
+USB_DEVICE_2 = "/dev/ttyACM1"
 
 # USB serial baud rate (most QR scanners use 9600)
 BAUD_RATE = 9600
