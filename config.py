@@ -8,6 +8,7 @@ FILE_PREFIX_2 = 'QR2'
 
 # FTP credentials
 FTP_HOST = '192.168.0.179'
+FTP_PORT = 2121
 FTP_USER = 'user'
 FTP_PASS = '12345'
 
@@ -29,7 +30,7 @@ BAUD_RATE = 9600
 
 TIMEOUT = 0.01  # seconds (serial read loop delay)
 
-LOG_TIME = 5  # minutes per log file
+LOG_TIME = 0.5  # minutes per log file
 
 TIME_FORMAT = "%Y%m%d-%H%M%S"
 

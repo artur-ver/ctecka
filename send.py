@@ -4,12 +4,19 @@
 import os.path
 import sys
 import ftplib
-from config import FTP_HOST, FTP_USER, FTP_PASS, REMOTE_ROOT
+from config import FTP_HOST, FTP_PORT, FTP_USER, FTP_PASS, REMOTE_ROOT
 
 
-def upload_file_to_ftp_server(file_path, ftp_server_address=FTP_HOST, ftp_username=FTP_USER, ftp_password=FTP_PASS):
+def upload_file_to_ftp_server(
+    file_path,
+    ftp_server_address=FTP_HOST,
+    ftp_server_port=FTP_PORT,
+    ftp_username=FTP_USER,
+    ftp_password=FTP_PASS,
+):
     """Upload a file to the FTP server."""
-    with ftplib.FTP(ftp_server_address) as ftp:
+    with ftplib.FTP() as ftp:
+        ftp.connect(ftp_server_address, ftp_server_port)
         ftp.login(user=ftp_username, passwd=ftp_password)
         with open(file_path, 'rb') as file:
             ftp.storbinary(f'STOR {REMOTE_ROOT}/{os.path.split(file_path)[1]}', file)

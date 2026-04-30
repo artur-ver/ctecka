@@ -7,7 +7,7 @@ from datetime import datetime
 from ftplib import FTP, error_perm
 
 from send import upload_file_to_ftp_server
-from config import FTP_HOST, FTP_USER, FTP_PASS, REMOTE_ROOT, LOG_DIR_ROOT
+from config import FTP_HOST, FTP_PORT, FTP_USER, FTP_PASS, REMOTE_ROOT, LOG_DIR_ROOT
 
 
 def get_local_log_files():
@@ -20,7 +20,8 @@ def get_local_log_files():
 
 
 def connect_ftp() -> FTP:
-    ftp = FTP(FTP_HOST)
+    ftp = FTP()
+    ftp.connect(FTP_HOST, FTP_PORT)
     ftp.login(FTP_USER, FTP_PASS)
     ftp.cwd(REMOTE_ROOT)
     ftp.voidcmd('TYPE I')  # binary mode
@@ -80,7 +81,7 @@ def sync_file(local_path: str):
 
     while True:
         try:
-            upload_file_to_ftp_server(local_path, FTP_HOST, FTP_USER, FTP_PASS)
+            upload_file_to_ftp_server(local_path, FTP_HOST, FTP_PORT, FTP_USER, FTP_PASS)
         except Exception as e:
             print(f"[Error] upload failed for '{filename}': {e}")
             time.sleep(5)
