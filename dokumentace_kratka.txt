@@ -1,0 +1,36 @@
+Raspberry Pi scanner notes
+==========================
+
+Date: 2026-04-30
+
+Current hardware detected on 192.168.0.126:
+- 24ea:0197 Meva Barcode Scanner
+- e851:2100 Barcode Reader
+
+Verified behavior on Raspberry Pi:
+- The scanners do not create /dev/ttyACM0 or /dev/ttyACM1.
+- They are detected as USB HID keyboards.
+- Stable device symlinks are available under /dev/input/by-id/usb-*-event-kbd.
+- User kyj is already in the input group, so the app can read those devices without sudo.
+
+What changed in app.py:
+- Serial mode is still supported.
+- If configured serial ports are missing, the app now auto-detects scanners.
+- Auto-detection checks /dev/ttyACM*, /dev/ttyUSB*, then /dev/input/by-id/usb-*-event-kbd.
+- HID keyboard scanners are read directly from Linux input events, so no scanner reprogramming is required.
+
+Useful commands on Raspberry Pi:
+- ls -l /dev/ttyACM* /dev/ttyUSB*
+- ls -l /dev/input/by-id
+- lsusb
+- python3 app.py
+
+Expected startup now:
+- The app prints how many devices were found.
+- It prints which device path is assigned to QR1 and QR2.
+- For the current scanners it should use /dev/input/by-id/...-event-kbd paths.
+
+If scans still fail:
+- Check that both scanners still appear in ls -l /dev/input/by-id.
+- Check dmesg for repeated USB over-current or disconnect messages.
+- If USB resets continue, inspect the hub/power path because the kernel already reported over-current events.

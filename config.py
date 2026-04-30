@@ -17,9 +17,10 @@ REMOTE_ROOT = '/'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 LOG_DIR_ROOT = os.path.join(SCRIPT_DIR, 'logs')
 
-# USB serial devices for QR scanners
-# On Raspberry Pi, USB serial devices appear as /dev/ttyUSB0, /dev/ttyUSB1
-# or /dev/ttyACM0, /dev/ttyACM1 depending on the scanner model
+# Preferred scanner device paths.
+# app.py first tries these explicit paths, then falls back to auto-detection:
+#   - serial scanners on /dev/ttyACM* and /dev/ttyUSB*
+#   - HID keyboard scanners on /dev/input/by-id/usb-*-event-kbd
 USB_DEVICE_1 = "/dev/ttyACM0"
 USB_DEVICE_2 = "/dev/ttyACM1"
 
