@@ -7,9 +7,9 @@ FILE_PREFIX_1 = 'QR1'
 FILE_PREFIX_2 = 'QR2'
 
 # FTP credentials
-FTP_HOST = '217.198.114.190'
-FTP_USER = '6936'
-FTP_PASS = 'igWX2kvk-9'
+FTP_HOST = '192.168.0.179'
+FTP_USER = 'user'
+FTP_PASS = '12345'
 
 REMOTE_ROOT = '/'
 
