@@ -31,6 +31,43 @@ INPUT_EVENT_STRUCT = struct.Struct("llHHi")
 EV_KEY = 0x01
 ENTER_KEYS = {28, 96}
 SHIFT_KEYS = {42, 54}
+ALT_KEYS = {56, 100}
+
+ALT_DIGIT_KEYMAP = {
+    2: "1",
+    3: "2",
+    4: "3",
+    5: "4",
+    6: "5",
+    7: "6",
+    8: "7",
+    9: "8",
+    10: "9",
+    11: "0",
+    71: "7",
+    72: "8",
+    73: "9",
+    75: "4",
+    76: "5",
+    77: "6",
+    79: "1",
+    80: "2",
+    81: "3",
+    82: "0",
+}
+
+SHIFTED_DIGIT_TO_DIGIT = {
+    ")": "0",
+    "!": "1",
+    "@": "2",
+    "#": "3",
+    "$": "4",
+    "%": "5",
+    "^": "6",
+    "&": "7",
+    "*": "8",
+    "(": "9",
+}
 
 HID_KEYMAP = {
     2: ("1", "!"),
@@ -150,6 +187,51 @@ def stamp(minutes=0):
     return time.monotonic_ns() + (minutes * 60 * 1_000_000_000)
 
 
+def decode_decimal_ascii_triplets(text):
+    if not text.isdigit() or len(text) % 3 != 0:
+        return None
+
+    decoded = []
+    for index in range(0, len(text), 3):
+        value = int(text[index:index + 3])
+        if not 32 <= value <= 126:
+            return None
+        decoded.append(chr(value))
+
+    return "".join(decoded)
+
+
+def normalize_keyboard_scan(text):
+    normalized = text.strip()
+    if not normalized:
+        return normalized
+
+    triplet_decoded = decode_decimal_ascii_triplets(normalized)
+    if triplet_decoded:
+        normalized = triplet_decoded
+
+    translated = "".join(SHIFTED_DIGIT_TO_DIGIT.get(char, char) for char in normalized)
+    if translated.isdigit():
+        normalized = translated
+
+    return normalized
+
+
+def alt_digits_to_char(digits):
+    if not digits:
+        return None
+
+    try:
+        value = int("".join(digits))
+    except ValueError:
+        return None
+
+    if not 32 <= value <= 126:
+        return None
+
+    return chr(value)
+
+
 class SerialScanner:
     def __init__(self, device):
         self.device = device
@@ -171,6 +253,8 @@ class HIDKeyboardScanner:
         self.device = device
         self.fd = os.open(device, os.O_RDONLY | os.O_NONBLOCK)
         self.shift_pressed = False
+        self.alt_pressed = False
+        self.alt_digits = []
         self.buffer = []
 
     def read_code(self):
@@ -193,11 +277,29 @@ class HIDKeyboardScanner:
                 self.shift_pressed = value != 0
                 continue
 
+            if code in ALT_KEYS:
+                if value == 1:
+                    self.alt_pressed = True
+                    self.alt_digits.clear()
+                elif value == 0:
+                    self.alt_pressed = False
+                    decoded = alt_digits_to_char(self.alt_digits)
+                    self.alt_digits.clear()
+                    if decoded:
+                        self.buffer.append(decoded)
+                continue
+
             if value != 1:
                 continue
 
+            if self.alt_pressed:
+                digit = ALT_DIGIT_KEYMAP.get(code)
+                if digit is not None:
+                    self.alt_digits.append(digit)
+                    continue
+
             if code in ENTER_KEYS:
-                decoded = "".join(self.buffer).strip()
+                decoded = normalize_keyboard_scan("".join(self.buffer))
                 self.buffer.clear()
                 if decoded:
                     return decoded
