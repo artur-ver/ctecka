@@ -1,0 +1,20 @@
+sudo systemctl stop rustdesk
+sudo systemctl stop systemd-machined
+sudo rm -f /etc/machine-id
+sudo systemd-machine-id-setup
+rm -rf ~/.config/rustdesk ~/.local/share/rustdesk /var/lib/rustdesk
+systemctl --user start rustdesk || sudo systemctl start rustdesk
+sleep 2
+grep -E "^\s*id\s*=" ~/.config/rustdesk/RustDesk.toml || rustdesk --config
+
+sudo rustdesk --password schubertpi@456
+
+
+sudo teamviewer --daemon stop
+rm -rf ~/.teamviewer
+sudo rm -f /opt/teamviewer*/config/global.conf
+sudo teamviewer --daemon start
+
+teamviewer --info
+
+sudo teamviewer --passwd 'schubertpi@456'

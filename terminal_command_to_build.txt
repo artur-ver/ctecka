@@ -49,8 +49,7 @@ sleep 3
 
 mkdir -p ~/.config/systemd/user
 
-echo -e '[Unit]\nDescription=Autostart app_draha1.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/app_draha1.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-app1.service
-echo -e '[Unit]\nDescription=Autostart app_draha2.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/app_draha2.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-app2.service
+echo -e '[Unit]\nDescription=Autostart app.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/app.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-app.service
 echo -e '[Unit]\nDescription=Autostart restart.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/restart.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-restart.service
 echo -e '[Unit]\nDescription=Autostart comp_clean.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/comp_clean.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-clean.service
 echo -e '[Unit]\nDescription=Autostart restart_app.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/restart_app.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-restart_app.service
@@ -58,8 +57,8 @@ echo -e '[Unit]\nDescription=Autostart restart_app.py in xterm\n\n[Service]\nEnv
 #echo -e '[Unit]\nDescription=Autostart internet.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/internet.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-internet.service
 
 systemctl --user daemon-reexec
-systemctl --user enable autostart-app1.service autostart-app2.service autostart-restart.service autostart-clean.service autostart-restart_app.service
-systemctl --user restart autostart-app1.service autostart-app2.service autostart-restart.service autostart-clean.service autostart-restart_app.service
+systemctl --user enable autostart-app.service autostart-restart.service autostart-clean.service autostart-restart_app.service
+systemctl --user restart autostart-app.service autostart-restart.service autostart-clean.service autostart-restart_app.service
 
 
 

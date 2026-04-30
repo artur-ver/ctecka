@@ -1,0 +1,16 @@
+# Attention: coords_click.py and autostart-coords_click.service are NOT removed by this script!
+
+systemctl --user stop autostart-app.service autostart-restart.service autostart-clean.service autostart-ftp.service autostart-coords_click.service autostart-restart_app.service autostart-internet.service
+systemctl --user disable autostart-app.service autostart-restart.service autostart-clean.service autostart-ftp.service autostart-coords_click.service autostart-restart_app.service autostart-internet.service
+
+rm ~/.config/systemd/user/autostart-app.service ~/.config/systemd/user/autostart-restart.service ~/.config/systemd/user/autostart-clean.service ~/.config/systemd/user/autostart-ftp.service ~/.config/systemd/user/autostart-restart_app.service ~/.config/systemd/user/autostart-internet.service
+
+rm -rf /app/app.py /app/restart.py /app/comp_clean.py /app/ftp_size_control.py /app/restart_app.py /app/internet.py
+
+sudo apt remove -y xterm
+
+#sudo apt purge rustdesk -y && sudo apt autoremove --purge -y && sudo rm -rf ~/.config/rustdesk /etc/rustdesk /var/lib/rustdesk
+
+systemctl --user disable ftp_size_control
+
+rm /app/ftp_size_control.py

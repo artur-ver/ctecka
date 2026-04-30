@@ -1,0 +1,44 @@
+# --- rustdesk install and autostart (kommented) ---
+wget https://github.com/rustdesk/rustdesk/releases/download/1.4.0/rustdesk-1.4.0-armv7-sciter.deb
+sleep 2
+
+sudo dpkg -i rustdesk-1.4.0-armv7-sciter.deb
+sleep 2
+
+sudo apt-get install -f -y
+sleep 2
+
+sudo rm rustdesk-1.4.0-armv7-sciter.deb
+
+sleep 2
+
+sudo rustdesk --password schubertpi@456 
+
+
+sleep 2
+
+sudo echo -e '[Unit]\nDescription=Autostart rustdesk\n\n[Service]\nExecStart=/usr/bin/rustdesk\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-rustdesk.service
+sleep 2
+
+sudo systemctl --user enable autostart-rustdesk.service
+sleep 2
+
+sudo systemctl --user restart autostart-rustdesk.service
+
+sleep 1
+
+sudo rustdesk --password schubertpi@456
+
+sleep 3
+
+sudo rustdesk --password schubertpi@456
+
+sleep 3
+
+sudo rustdesk --password schubertpi@456
+
+rustdesk
+
+
+
+
