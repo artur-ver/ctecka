@@ -5,6 +5,8 @@ import os
 import time
 from datetime import datetime
 
+from system_utils import request_reboot
+
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 LOG_DIR_ROOT = os.path.join(SCRIPT_DIR, 'logs')
 NSENT_DIR = os.path.join(LOG_DIR_ROOT, 'nsent')
@@ -96,19 +98,27 @@ def reboot_raspberry():
     date_str, count = load_restart_counter()
     if count >= MAX_RESTARTS_PER_DAY:
         print("[monitor] restart limit reached for today, not rebooting")
-        return
-    count += 1
+        return False
+
+    next_count = count + 1
+    save_restart_counter(date_str, next_count)
+    print(f"[monitor] rebooting raspberry ({next_count}/{MAX_RESTARTS_PER_DAY})")
+
+    success, message = request_reboot()
+    if success:
+        return True
+
     save_restart_counter(date_str, count)
-    print(f"[monitor] rebooting raspberry ({count}/{MAX_RESTARTS_PER_DAY})")
-    os.system("sudo reboot")
+    print(f"[monitor] reboot command failed: {message}")
+    return False
 
 
 def main():
     print("[monitor] start")
     while True:
         if check_log_problem():
-            reboot_raspberry()
-            time.sleep(300)  # wait 5 min after reboot trigger before next check
+            if reboot_raspberry():
+                time.sleep(300)  # wait 5 min after reboot trigger before next check
         time.sleep(CHECK_INTERVAL)
 
 

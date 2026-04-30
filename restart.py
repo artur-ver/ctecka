@@ -5,6 +5,8 @@ import time
 import os
 from datetime import datetime
 
+from system_utils import request_reboot
+
 # Reboot window: 02:00 – 03:00
 START_HOUR = 2
 END_HOUR = 3
@@ -37,6 +39,12 @@ def mark_reboot():
     print(f"[restart.py] Wrote flag file: {FLAG_FILE}")
 
 
+def clear_reboot_mark():
+    if os.path.exists(FLAG_FILE):
+        os.remove(FLAG_FILE)
+        print(f"[restart.py] Removed flag file: {FLAG_FILE}")
+
+
 def log_restart(event):
     message = f"{datetime.now():%Y-%m-%d %H:%M:%S.%f} - raspberry {event}"
     with open(LOG_RESTART_FILE, "a") as f:
@@ -67,6 +75,11 @@ if __name__ == "__main__":
         if reboot_allowed():
             mark_reboot()
             log_restart("off")
-            os.system("sudo reboot")
-            break
+            success, message = request_reboot()
+            if success:
+                break
+
+            clear_reboot_mark()
+            log_restart(f"reboot failed: {message}")
+            print(f"[restart.py] reboot command failed: {message}")
         time.sleep(CHECK_INTERVAL)

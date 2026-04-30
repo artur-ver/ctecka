@@ -42,5 +42,15 @@ LOG_TYPE_ERROR = "Error"
 COMPRESS_OLD_LOGS_DAYS = 30
 MAX_USED_PERCENT = 95  # Delete .gz files if disk is above this %
 
-# Notification emails
-EMAIL_TO = ["arturverbovsuk@gmail.com", "l.glaser@schubert.cz", "m.trikal@schubert.cz"]
+# Centralized sudo handling for reboot requests.
+# Use non-interactive sudo and configure passwordless access for reboot once
+# on the Raspberry Pi instead of storing a plaintext password in the repo.
+SUDO_REBOOT_COMMANDS = (
+	("/usr/sbin/reboot",),
+	("/sbin/reboot",),
+)
+SUDOERS_REBOOT_HINT = (
+	"Create /etc/sudoers.d/ctecka-reboot with NOPASSWD access for "
+	"/usr/sbin/reboot and /sbin/reboot."
+)
+

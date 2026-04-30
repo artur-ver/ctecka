@@ -27,6 +27,10 @@ sudo apt full-upgrade -y
 sudo chmod -R 777 /app
 sudo chown -R $USER:$USER /app
 
+echo "$USER ALL=(root) NOPASSWD: /usr/sbin/reboot, /sbin/reboot" | sudo tee /etc/sudoers.d/ctecka-reboot > /dev/null
+sudo chmod 440 /etc/sudoers.d/ctecka-reboot
+sudo visudo -cf /etc/sudoers.d/ctecka-reboot
+
 
 
 sudo apt-get install xdotool
@@ -35,13 +39,15 @@ sudo apt-get install xdotool
 sudo apt install -y xterm
 
 
-sudo rm /home/pi/Desktop/LogAPP
-sudo rm /home/pi/.config/autostart/LogAPP.desktop
-sudo rm /app/runApp.sh
+sudo rm -f "$HOME/Desktop/LogAPP"
+sudo rm -f "$HOME/.config/autostart/LogAPP.desktop"
+sudo rm -f /app/ctecka/runApp.sh
 
 
-git clone https://github.com/artur-ver/rus.git /app/temp
-rsync -a --exclude='.git' /app/temp/ /app/
+mkdir -p /app/ctecka
+
+git clone https://github.com/artur-ver/ctecka.git /app/temp
+rsync -a --exclude='.git' /app/temp/ /app/ctecka/
 rm -rf /app/temp
 
 
@@ -49,12 +55,12 @@ sleep 3
 
 mkdir -p ~/.config/systemd/user
 
-echo -e '[Unit]\nDescription=Autostart app.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/app.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-app.service
-echo -e '[Unit]\nDescription=Autostart restart.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/restart.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-restart.service
-echo -e '[Unit]\nDescription=Autostart comp_clean.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/comp_clean.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-clean.service
-echo -e '[Unit]\nDescription=Autostart restart_app.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/restart_app.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-restart_app.service
+echo -e '[Unit]\nDescription=Autostart app.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/ctecka/app.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-app.service
+echo -e '[Unit]\nDescription=Autostart restart.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/ctecka/restart.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-restart.service
+echo -e '[Unit]\nDescription=Autostart comp_clean.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/ctecka/comp_clean.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-clean.service
+echo -e '[Unit]\nDescription=Autostart restart_app.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/ctecka/restart_app.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-restart_app.service
 
-#echo -e '[Unit]\nDescription=Autostart internet.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/internet.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-internet.service
+#echo -e '[Unit]\nDescription=Autostart internet.py in xterm\n\n[Service]\nEnvironment=DISPLAY=:0\nExecStart=/usr/bin/xterm -hold -e bash -c "sleep 10; python3 /app/ctecka/internet.py"\nRestart=always\nRestartSec=5\n\n[Install]\nWantedBy=default.target' > ~/.config/systemd/user/autostart-internet.service
 
 systemctl --user daemon-reexec
 systemctl --user enable autostart-app.service autostart-restart.service autostart-clean.service autostart-restart_app.service
